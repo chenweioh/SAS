@@ -1,5 +1,5 @@
 /*This SAS code help us prepare a roster (by random) from 4 Departments (with imbalance number of employee)*/
-/* To let SAS show "GCPGLP" instead of "GCP"(First 3 Character) */
+/* To let SAS show "DepartmentA" instead of "DEP"(First 3 Character) */
 proc format;
   value $myformat
   'abcdef' = 'abcdef'
@@ -12,10 +12,10 @@ run;
 %let sample_size = 41;
 
 /* Define the group sizes */
-%let group_size_1 = 23; /*GMP*/
-%let group_size_2 = 5; /*BEEC*/
-%let group_size_3 = 6; /*GCPGLP*/
-%let group_size_4 = 7; /*GDP*/
+%let group_size_1 = 23; /*DepartmentA*/
+%let group_size_2 = 5; /*DepartmentB*/
+%let group_size_3 = 6; /*DepartmentC*/
+%let group_size_4 = 7; /*DepartmentD*/
 
 /* Set the seed number for the random number generator */
 /* Generate a random number for each participant, using the sample size as the maximum value */
@@ -35,10 +35,10 @@ run;
 data participants;
   set random_numbers;
   put group_number $myformat;
-  if i <= &group_size_1 then group_number = 'GMP';
-  else if i <= (&group_size_1 + &group_size_2) then group_number = 'BEEC';
-  else if i <= (&group_size_1 + &group_size_2 + &group_size_3) then group_number = 'GCPGLP';
-  else group_number = 'GDP';
+  if i <= &group_size_1 then group_number = 'DepartmentA';
+  else if i <= (&group_size_1 + &group_size_2) then group_number = 'DepartmentB';
+  else if i <= (&group_size_1 + &group_size_2 + &group_size_3) then group_number = 'DepartmentC';
+  else group_number = 'DepartmentD';
  
 run;
 
