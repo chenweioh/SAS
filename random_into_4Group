@@ -1,0 +1,48 @@
+/*This SAS code help us prepare a roster (by random) from 4 Departments (with imbalance number of employee)*/
+/* To let SAS show "GCPGLP" instead of "GCP"(First 3 Character) */
+proc format;
+  value $myformat
+  'abcdef' = 'abcdef'
+  other = 'other'
+  ;
+run;
+
+/* Define the number of groups and the sample size */
+%let num_groups = 4;
+%let sample_size = 41;
+
+/* Define the group sizes */
+%let group_size_1 = 23; /*GMP*/
+%let group_size_2 = 5; /*BEEC*/
+%let group_size_3 = 6; /*GCPGLP*/
+%let group_size_4 = 7; /*GDP*/
+
+/* Set the seed number for the random number generator */
+/* Generate a random number for each participant, using the sample size as the maximum value */
+data random_numbers;
+call streaminit(105);
+  do i = 1 to &sample_size;
+    random_number = rand('Uniform');
+    output;
+  end;
+run;
+
+/* Sort the data by the random number, and assign participants to groups based on their ranking */
+proc sort data=random_numbers;
+  by random_number;
+run;
+
+data participants;
+  set random_numbers;
+  put group_number $myformat;
+  if i <= &group_size_1 then group_number = 'GMP';
+  else if i <= (&group_size_1 + &group_size_2) then group_number = 'BEEC';
+  else if i <= (&group_size_1 + &group_size_2 + &group_size_3) then group_number = 'GCPGLP';
+  else group_number = 'GDP';
+ 
+run;
+
+/* Display the group assignments for each participant */
+proc print data=participants;
+  var i group_number;
+run;
